@@ -4,9 +4,12 @@ This document outlines the planned asset migration from legacy repository to new
 
 ## Migration Manifest
 
-### 1. Domain contracts
-- lib/domain/types.ts
-- lib/domain/modules/iching.ts
+### 1. Domain contracts ✅ COMPLETE (BASE-1B)
+- OLD: lib/domain/types.ts → NEW: packages/domain/src/types.ts
+- OLD: lib/application/types.ts → NEW: packages/domain/src/application.ts
+- OLD: lib/application/errors.ts → NEW: packages/domain/src/errors.ts
+- Behavior change: NO (same DomainId set, same capabilities, same error codes)
+- Migration type: Contract-only; no runtime registry, no adapter, no router
 
 ### 2. I Ching pure engine
 - lib/iching/engine.ts
