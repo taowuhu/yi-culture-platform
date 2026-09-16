@@ -19,12 +19,23 @@ This document outlines the planned asset migration from legacy repository to new
 - NEW package boundary: packages/iching/src/index.ts, package.json, tsconfig.json
 - Behavior change: NO
 - Old/new deterministic parity: PASS (static, one moving line, multiple moving lines; complete serialized results exact)
-- Excluded: coin.ts (random adapter), classics.ts/classics-sources.md (text helper/source notes), query.ts (query helper)
-- I Ching tests remain pending for BASE-1D
+- Additional V0.1 helper: lib/iching/classics.ts → packages/iching/src/classics.ts (UNCHANGED; moving-line text lookup)
+- Excluded: coin.ts (random adapter), classics-sources.md (source notes), query.ts (query helper)
 
-### 3. I Ching tests
-- tests/iching-analyze.test.ts
-- tests/iching-command.test.ts
+### 3. I Ching tests ✅ COMPLETE (V0.1)
+- OLD: tests/engine.test.ts → NEW: packages/iching/tests/engine.test.ts
+- OLD: tests/trigrams.test.ts → NEW: packages/iching/tests/trigrams.test.ts
+- OLD: tests/classics.test.ts → NEW: packages/iching/tests/classics.test.ts
+- Import paths adapted for package boundary; assertions unchanged
+- Coverage: static/moving lines, eight trigrams, 64 unique mappings, original/changed hexagrams, gua text and moving-line text
+- Result: 31 tests PASS
+
+### V0.1 Mobile App ✅ COMPLETE
+- Home → I Ching input → result flow implemented in apps/mobile/App.tsx
+- Manual six-line input supports 6/7/8/9 with traditional labels
+- Result displays original hexagram, diagram, moving lines and texts, changed hexagram and gua text
+- Expo Doctor: 21/21 PASS
+- Expo Web bundle and headless real-browser interaction: PASS
 
 ### 4. Application adapters
 - lib/application/router.ts

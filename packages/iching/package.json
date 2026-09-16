@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "test": "echo \"No tests in BASE-1C (tests moved to BASE-1D)\"",
+    "test": "vitest run tests",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
