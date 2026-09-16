@@ -1,0 +1,19 @@
+{
+  "name": "yi-culture-platform",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:mobile": "npm run dev --workspace=apps/mobile",
+    "check:mobile": "npm run check --workspace=apps/mobile"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "typescript": "~6.0.3"
+  }
+}
