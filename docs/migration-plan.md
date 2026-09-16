@@ -11,8 +11,16 @@ This document outlines the planned asset migration from legacy repository to new
 - Behavior change: NO (same DomainId set, same capabilities, same error codes)
 - Migration type: Contract-only; no runtime registry, no adapter, no router
 
-### 2. I Ching pure engine
-- lib/iching/engine.ts
+### 2. I Ching pure engine ✅ COMPLETE (BASE-1C)
+- OLD: lib/iching/types.ts → NEW: packages/iching/src/types.ts (UNCHANGED)
+- OLD: lib/iching/trigrams.ts → NEW: packages/iching/src/trigrams.ts (UNCHANGED)
+- OLD: lib/iching/hexagrams.ts → NEW: packages/iching/src/hexagrams.ts (UNCHANGED; LEGACY_COUPLING: identity mapping and classical text share one table)
+- OLD: lib/iching/engine.ts → NEW: packages/iching/src/engine.ts (UNCHANGED)
+- NEW package boundary: packages/iching/src/index.ts, package.json, tsconfig.json
+- Behavior change: NO
+- Old/new deterministic parity: PASS (static, one moving line, multiple moving lines; complete serialized results exact)
+- Excluded: coin.ts (random adapter), classics.ts/classics-sources.md (text helper/source notes), query.ts (query helper)
+- I Ching tests remain pending for BASE-1D
 
 ### 3. I Ching tests
 - tests/iching-analyze.test.ts
