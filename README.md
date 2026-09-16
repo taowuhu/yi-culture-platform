@@ -9,17 +9,26 @@ Mobile-first workspace for Eastern Traditional Culture App.
 - **server/** – Server-side services (retrieval, ai)
 - **docs/** – Documentation and migration plans
 
+## V0.2 Features
+
+- Three-coin I Ching casting, plus manual 6/7/8/9 input
+- Original and changed hexagram diagrams, gua text, and moving-line text
+- Local on-device divination history (no database)
+- Classical text provenance with transcription and cross-check sources
+
 ## Quick Start
 
 ```bash
-cd /e/pi/yi-culture-platform
+cd E:/pi/yi-culture-platform
 npm install
+npm run dev:mobile
 ```
 
-Then:
-- `cd apps/mobile && npx expo doctor` – verify Expo setup
-- `cd packages/* && npm run build` – build shared packages
-- `cd server/retrieval && npm run build` – build server side
+Verification:
+- `npm test`
+- `npm run typecheck`
+- `npm run doctor`
+- `npm run web`
 
 ## Migration
 

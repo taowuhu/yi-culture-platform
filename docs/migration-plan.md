@@ -20,7 +20,8 @@ This document outlines the planned asset migration from legacy repository to new
 - Behavior change: NO
 - Old/new deterministic parity: PASS (static, one moving line, multiple moving lines; complete serialized results exact)
 - Additional V0.1 helper: lib/iching/classics.ts → packages/iching/src/classics.ts (UNCHANGED; moving-line text lookup)
-- Excluded: coin.ts (random adapter), classics-sources.md (source notes), query.ts (query helper)
+- V0.2: lib/iching/coin.ts → packages/iching/src/coin.ts (UNCHANGED random input adapter; Engine unchanged)
+- Excluded: query.ts (query helper)
 
 ### 3. I Ching tests ✅ COMPLETE (V0.1)
 - OLD: tests/engine.test.ts → NEW: packages/iching/tests/engine.test.ts
@@ -36,6 +37,14 @@ This document outlines the planned asset migration from legacy repository to new
 - Result displays original hexagram, diagram, moving lines and texts, changed hexagram and gua text
 - Expo Doctor: 21/21 PASS
 - Expo Web bundle and headless real-browser interaction: PASS
+
+### V0.2 Productization ✅ COMPLETE
+- Copper-coin journey produces six lines without requiring numeric input
+- AsyncStorage history persists line values and recalculates records through the deterministic Engine
+- Result displays transcription base, cross-check source, corpus scope, and variant policy
+- No database, AI, RAG, Bazi, or Engine semantic changes
+- Tests: 39 PASS; Expo Doctor: 21/21 PASS
+- Real browser: coin casting, result/source display, history display, and reload persistence PASS
 
 ### 4. Application adapters
 - lib/application/router.ts
