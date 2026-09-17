@@ -43,7 +43,7 @@ const LINE_OPTIONS: ReadonlyArray<{ value: LineValue; label: string }> = [
 
 const POSITION_NAMES = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'] as const;
 
-type Screen = 'welcome' | 'profile-setup' | 'home' | 'cast' | 'result' | 'history' | 'profile';
+type Screen = 'welcome' | 'profile-setup' | 'home' | 'cast' | 'result' | 'history' | 'profile' | 'explain';
 
 type ResultState = {
   value: HexagramResult;
@@ -472,6 +472,22 @@ export default function App() {
     );
   }
 
+  if (screen === 'explain') {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="dark" />
+        <ScrollView contentContainerStyle={styles.page}>
+          <Pressable accessibilityRole="button" onPress={() => setScreen('result')}>
+            <Text style={styles.back}>‹ 返回结果</Text>
+          </Pressable>
+          <Text style={styles.pageTitle}>白话解读</Text>
+          <Text style={styles.bodyText}>根据现有原典依据与卦象计算，系统提供参考解释。</Text>
+          <Text style={styles.bodyText}>如果 AI 提供商未配置，将显示「AI 解读当前未配置」，原典内容与计算结果仍完全可用。</Text>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   if (screen === 'profile') {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -535,10 +551,41 @@ export default function App() {
 
         <SourceCard />
 
+        <View style={styles.card}>
+          <Text style={styles.sectionLabel}>原典依据</Text>
+          <Text style={styles.bodyText}>{CLASSICS_SCOPE}</Text>
+          {CLASSICS_SOURCES.map((source) => (
+            <Pressable
+              accessibilityRole="link"
+              key={source.id}
+              onPress={() => void Linking.openURL(source.url)}
+              style={({ pressed }) => [styles.sourceRow, pressed && styles.pressed]}
+            >
+              <View style={styles.sourceTextWrap}>
+                <Text style={styles.sourceTitle}>{source.title}</Text>
+                <Text style={styles.sourceRole}>
+                  {source.role === 'transcription-base' ? '录入底本' : '交叉核对'}
+                </Text>
+              </View>
+              <Text style={styles.sourceArrow}>↗</Text>
+            </Pressable>
+          ))}
+          <Text style={styles.sourceNote}>{CLASSICS_VARIANT_NOTE}</Text>
+        </View>
+
+        <Pressable
+          accessibilityRole="button"
+          testID="explain-ai"
+          style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}
+          onPress={() => setScreen('explain')}
+        >
+          <Text style={styles.secondaryButtonText}>帮我讲明白</Text>
+        </Pressable>
+
         <Pressable
           accessibilityRole="button"
           testID="cast-again"
-          style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}
+          style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed, { marginTop: 10 }]}
           onPress={() => startCasting('coin')}
         >
           <Text style={styles.secondaryButtonText}>再次起卦</Text>
