@@ -117,6 +117,47 @@ function SourceCard() {
   );
 }
 
+function ProfileSetupScreen({ onComplete }: { onComplete: (newProfile: UserProfile) => void }) {
+  const [nickname, setNickname] = useState('');
+
+  const saveNewProfile = async () => {
+    const now = new Date().toISOString();
+    const newProfile = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      nickname: nickname.trim(),
+      createdAt: now,
+      updatedAt: now,
+    };
+    await saveProfile(newProfile);
+    onComplete(newProfile);
+  };
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar style="dark" />
+      <ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled">
+        <Text style={styles.pageTitle}>创建档案</Text>
+        <Text style={styles.pageIntro}>昵称是必填项，其他信息可后续完善。</Text>
+        <View style={styles.inputCard}>
+          <Text style={styles.sectionLabel}>昵称 <Text style={styles.bodyText}>必填</Text></Text>
+          <TextInput
+            value={nickname}
+            onChangeText={setNickname}
+            placeholder="例如：知行者"
+            placeholderTextColor="#B8A690"
+            style={{ borderWidth: 1, borderColor: '#D8CDBB', borderRadius: 10, padding: 14, fontSize: 16, backgroundColor: '#FAF6ED', color: '#28241F', marginBottom: 8 }}
+            testID="nickname-input"
+          />
+        </View>
+        <Text style={[styles.bodyText, { fontSize: 13, color: '#756C60', marginBottom: 14 }]}>其他信息可稍后在「我的」中完善。</Text>
+        <Pressable accessibilityRole="button" testID="save-profile" disabled={nickname.trim().length === 0} onPress={() => void saveNewProfile()}>
+          <Text style={styles.primaryButtonText}>完成</Text>
+        </Pressable>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [method, setMethod] = useState<DivinationMethod>('coin');
@@ -216,36 +257,13 @@ export default function App() {
   }
 
   if (screen === 'profile-setup') {
-    const [nickname, setNickname] = useState('');
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <StatusBar style="dark" />
-        <ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled">
-          <Text style={styles.pageTitle}>创建档案</Text>
-          <Text style={styles.pageIntro}>昵称是必填项，其他信息可后续完善。</Text>
-          <View style={styles.inputCard}>
-            <Text style={styles.sectionLabel}>昵称 <Text style={styles.bodyText}>必填</Text></Text>
-            <TextInput
-              value={nickname}
-              onChangeText={setNickname}
-              placeholder="例如：知行者"
-              placeholderTextColor="#B8A690"
-              style={{ borderWidth: 1, borderColor: '#D8CDBB', borderRadius: 10, padding: 14, fontSize: 16, backgroundColor: '#FAF6ED', color: '#28241F', marginBottom: 8 }}
-              testID="nickname-input"
-            />
-          </View>
-          <Text style={[styles.bodyText, { fontSize: 13, color: '#756C60', marginBottom: 14 }]}>其他信息可稍后在「我的」中完善。</Text>
-          <Pressable accessibilityRole="button" testID="save-profile" disabled={nickname.trim().length === 0} onPress={async () => {
-            const now = new Date().toISOString();
-            const newProfile = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, nickname: nickname.trim(), createdAt: now, updatedAt: now };
-            await saveProfile(newProfile);
-            setProfile(newProfile);
-            setScreen('home');
-          }}>
-            <Text style={styles.primaryButtonText}>完成</Text>
-          </Pressable>
-        </ScrollView>
-      </SafeAreaView>
+      <ProfileSetupScreen
+        onComplete={(newProfile) => {
+          setProfile(newProfile);
+          setScreen('home');
+        }}
+      />
     );
   }
 
