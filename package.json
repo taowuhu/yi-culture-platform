@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev:mobile": "npm run start --workspace=mobile",
+    "dev:h5": "npm run dev:h5 --workspace=mobile",
     "doctor": "npx expo-doctor apps/mobile",
     "test": "vitest run",
     "typecheck": "npm run typecheck --workspace=@yi-culture/domain && npm run typecheck --workspace=@yi-culture/iching && npm run typecheck --workspace=mobile",

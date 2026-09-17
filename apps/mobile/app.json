@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "东方传统文化",
-    "slug": "yi-culture-mobile",
+    "slug": "yi-culture-platform",
     "version": "0.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,6 +21,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b24d75c4-02be-48e8-afbd-ad80e5a21a96"
+      }
     }
   }
 }
