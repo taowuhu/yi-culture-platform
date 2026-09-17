@@ -1,39 +1,66 @@
-# Yi Culture Platform
+# 东方传统文化 App
 
-Mobile-first workspace for Eastern Traditional Culture App.
+一个以确定性术数计算、传统原典和现代移动体验为基础的东方传统知识 App。
 
-## Structure
+## V0.2 功能
 
-- **apps/mobile** – Expo mobile app (clean foundation)
-- **packages/** – Shared packages (domain, iching, bazi, knowledge-contracts, ai-contracts, eval)
-- **server/** – Server-side services (retrieval, ai)
-- **docs/** – Documentation and migration plans
+- 周易起卦
+- 三枚铜钱起卦
+- 手动 6/7/8/9 起卦
+- 本卦 / 动爻 / 变卦
+- 卦辞 / 爻辞
+- 原典来源
+- 本地历史记录
 
-## V0.2 Features
+## Screenshots
 
-- Three-coin I Ching casting, plus manual 6/7/8/9 input
-- Original and changed hexagram diagrams, gua text, and moving-line text
-- Local on-device divination history (no database)
-- Classical text provenance with transcription and cross-check sources
+> 截图预留位置：首页、铜钱起卦、起卦结果、历史记录
 
-## Quick Start
+![首页](docs/screenshots/home.png)
+
+![铜钱起卦](docs/screenshots/coin-casting.png)
+
+![起卦结果](docs/screenshots/result.png)
+
+![历史记录](docs/screenshots/history.png)
+
+## Tech Stack
+
+- Expo
+- React Native
+- TypeScript
+- npm workspaces
+
+## Run locally
 
 ```bash
-cd E:/pi/yi-culture-platform
 npm install
 npm run dev:mobile
 ```
 
-Verification:
-- `npm test`
-- `npm run typecheck`
-- `npm run doctor`
-- `npm run web`
+Web 预览：
 
-## Migration
+```bash
+npm run web
+```
 
-See `docs/migration-plan.md` for the ordered migration sequence.
+## Architecture
 
-## Legacy Repo
+- **apps/mobile** – Expo 移动应用（当前 V0.2 产品入口）
+- **packages/domain** – 共享领域契约与确定性计算核心
+- **packages/iching** – 周易起卦引擎、原典数据与来源
 
-The old `E:/pi/yi-agent-app` is treated as `LEGACY_RESEARCH_SOURCE` and is not modified.
+## Roadmap
+
+- UI polish
+- Evidence
+- Grounded AI
+- Bazi
+
+## Verification
+
+```bash
+npm test
+npm run typecheck
+npm run doctor
+```

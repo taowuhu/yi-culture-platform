@@ -1,20 +1,27 @@
 {
   "name": "yi-culture-platform",
   "version": "0.2.0",
+  "description": "一个以确定性术数计算、传统原典和现代移动体验为基础的东方传统知识 App。",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "dev:mobile": "npm run start --workspace=mobile",
-    "web": "npm run web --workspace=mobile",
-    "typecheck": "npm run typecheck --workspace=@yi-culture/domain && npm run typecheck --workspace=@yi-culture/iching && npm run typecheck --workspace=mobile",
+    "doctor": "npx expo-doctor apps/mobile",
     "test": "vitest run",
-    "doctor": "npx expo-doctor apps/mobile"
+    "typecheck": "npm run typecheck --workspace=@yi-culture/domain && npm run typecheck --workspace=@yi-culture/iching && npm run typecheck --workspace=mobile",
+    "web": "npm run web --workspace=mobile"
   },
-  "devDependencies": {
-    "typescript": "~6.0.3",
-    "vitest": "^5.0.0"
-  }
+  "workspaces": ["apps/*", "packages/*"],
+  "keywords": ["易经", "周易", "起卦", "传统文化", "确定性", "术数", "移动应用"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EXAMPLE/yi-culture-platform.git"
+  },
+  "bugs": {"url": "https://github.com/EXAMPLE/yi-culture-platform/issues"},
+  "contributors": [
+    {
+      "name": "Tao Wu",
+      "email": "w2370835630@gmail.com",
+      "url": "https://github.com/taowuhu"
+    }
+  ]
 }
