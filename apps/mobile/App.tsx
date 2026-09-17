@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import {
@@ -26,6 +27,12 @@ import {
   type DivinationMethod,
   type DivinationRecord,
 } from './src/history';
+import {
+  loadProfile,
+  saveProfile,
+  isFirstRun,
+  type UserProfile,
+} from './src/profile';
 
 const LINE_OPTIONS: ReadonlyArray<{ value: LineValue; label: string }> = [
   { value: 6, label: '老阴' },
@@ -36,7 +43,7 @@ const LINE_OPTIONS: ReadonlyArray<{ value: LineValue; label: string }> = [
 
 const POSITION_NAMES = ['初爻', '二爻', '三爻', '四爻', '五爻', '上爻'] as const;
 
-type Screen = 'home' | 'cast' | 'result' | 'history';
+type Screen = 'welcome' | 'profile-setup' | 'home' | 'cast' | 'result' | 'history' | 'profile';
 
 type ResultState = {
   value: HexagramResult;
@@ -117,9 +124,25 @@ export default function App() {
   const [coinLines, setCoinLines] = useState<LineValue[]>([]);
   const [result, setResult] = useState<ResultState | null>(null);
   const [history, setHistory] = useState<DivinationRecord[]>([]);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [firstRunChecked, setFirstRunChecked] = useState(false);
 
   useEffect(() => {
     void loadHistory().then(setHistory);
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      const prof = await loadProfile();
+      setProfile(prof);
+      const first = await isFirstRun();
+      if (!prof || first) {
+        setScreen('welcome');
+      } else {
+        setScreen('home');
+      }
+      setFirstRunChecked(true);
+    })();
   }, []);
 
   const updateManualLine = (index: number, value: LineValue) => {
@@ -158,6 +181,67 @@ export default function App() {
     setScreen('cast');
   };
 
+  if (!firstRunChecked) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="dark" />
+        <View style={styles.home}>
+          <Text style={styles.seal}>易</Text>
+          <Text style={styles.brand}>东方传统文化</Text>
+          <Text style={styles.tagline}>正准备迎接你……</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (screen === 'welcome') {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="dark" />
+        <ScrollView contentContainerStyle={styles.page}>
+          <Text style={styles.pageTitle}>欢迎</Text>
+          <Text style={styles.pageIntro}>在正式开始之前，先创建你的个人档案。</Text>
+          <Pressable accessibilityRole="button" testID="start-profile" onPress={() => setScreen('profile-setup')}>
+            <Text style={styles.primaryButtonText}>开始使用</Text>
+          </Pressable>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  if (screen === 'profile-setup') {
+    const [nickname, setNickname] = useState('');
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="dark" />
+        <ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled">
+          <Text style={styles.pageTitle}>创建档案</Text>
+          <Text style={styles.pageIntro}>昵称是必填项，其他信息可后续完善。</Text>
+          <View style={styles.inputCard}>
+            <Text style={styles.sectionLabel}>昵称</Text>
+            <TextInput
+              value={nickname}
+              onChangeText={setNickname}
+              placeholder="例如：知行者"
+              placeholderTextColor="#B8A690"
+              style={{ borderWidth: 1, borderColor: '#D8CDBB', borderRadius: 10, padding: 14, fontSize: 16, backgroundColor: '#FAF6ED', color: '#28241F' }}
+              testID="nickname-input"
+            />
+          </View>
+          <Pressable accessibilityRole="button" testID="save-profile" disabled={nickname.trim().length === 0} onPress={async () => {
+            const now = new Date().toISOString();
+            const newProfile = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, nickname: nickname.trim(), createdAt: now, updatedAt: now };
+            await saveProfile(newProfile);
+            setProfile(newProfile);
+            setScreen('home');
+          }}>
+            <Text style={styles.primaryButtonText}>完成</Text>
+          </Pressable>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   if (screen === 'home') {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -165,14 +249,17 @@ export default function App() {
         <View style={styles.home}>
           <Text style={styles.seal}>易</Text>
           <Text style={styles.brand}>东方传统文化</Text>
-          <Text style={styles.tagline}>从一卦开始，读懂变化中的智慧</Text>
+          <Text style={styles.tagline}>{profile ? `早上好，${profile.nickname}` : '从一卦开始，读懂变化中的智慧'}</Text>
+          <Pressable accessibilityRole="button" testID="home-zhouyi" style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]} onPress={() => startCasting('coin')}>
+            <Text style={styles.primaryButtonText}>周易起卦</Text>
+          </Pressable>
           <Pressable
             accessibilityRole="button"
-            testID="home-zhouyi"
-            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
-            onPress={() => startCasting('coin')}
+            testID="home-profile"
+            style={({ pressed }) => [styles.homeLink, pressed && styles.pressed]}
+            onPress={() => setScreen('profile')}
           >
-            <Text style={styles.primaryButtonText}>周易起卦</Text>
+            <Text style={styles.homeLinkText}>我的</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
@@ -349,6 +436,29 @@ export default function App() {
                 <Text style={styles.primaryButtonText}>排卦</Text>
               </Pressable>
             </>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  if (screen === 'profile') {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="dark" />
+        <ScrollView contentContainerStyle={styles.page}>
+          <Pressable accessibilityRole="button" onPress={() => setScreen('home')}>
+            <Text style={styles.back}>‹ 返回首页</Text>
+          </Pressable>
+          <Text style={styles.pageTitle}>我的</Text>
+          {profile ? (
+            <View style={styles.card}>
+              <Text style={styles.sectionLabel}>昵称</Text>
+              <Text style={styles.classicalText}>{profile.nickname}</Text>
+              <Text style={styles.bodyText}>创建于 {new Date(profile.createdAt).toLocaleString('zh-CN')}</Text>
+            </View>
+          ) : (
+            <Text style={styles.bodyText}>暂无档案信息</Text>
           )}
         </ScrollView>
       </SafeAreaView>
