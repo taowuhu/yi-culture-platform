@@ -2,7 +2,7 @@
   "expo": {
     "name": "东方传统文化",
     "slug": "yi-culture-mobile",
-    "version": "0.2.0",
+    "version": "0.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -10,6 +10,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.tao.wuhu.yicult",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",

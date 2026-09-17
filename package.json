@@ -1,6 +1,6 @@
 {
   "name": "yi-culture-platform",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "一个以确定性术数计算、传统原典和现代移动体验为基础的东方传统知识 App。",
   "private": true,
   "scripts": {
