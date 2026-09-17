@@ -198,13 +198,19 @@ export default function App() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar style="dark" />
-        <ScrollView contentContainerStyle={styles.page}>
-          <Text style={styles.pageTitle}>欢迎</Text>
-          <Text style={styles.pageIntro}>在正式开始之前，先创建你的个人档案。</Text>
-          <Pressable accessibilityRole="button" testID="start-profile" onPress={() => setScreen('profile-setup')}>
+        <View style={[styles.home, { justifyContent: 'center', paddingBottom: 40 }]}>
+          <Text style={[styles.seal, { marginBottom: 24 }]} accessibilityRole="header">易</Text>
+          <Text style={[styles.brand, { letterSpacing: 4 }]}>东方传统文化</Text>
+          <Text style={[styles.tagline, { fontSize: 15, lineHeight: 22, maxWidth: 280 }]}>从一卦开始，读懂变化中的智慧。</Text>
+          <Pressable
+            accessibilityRole="button"
+            testID="start-profile"
+            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed, { marginTop: 48 }]}
+            onPress={() => setScreen('profile-setup')}
+          >
             <Text style={styles.primaryButtonText}>开始使用</Text>
           </Pressable>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     );
   }
@@ -218,16 +224,17 @@ export default function App() {
           <Text style={styles.pageTitle}>创建档案</Text>
           <Text style={styles.pageIntro}>昵称是必填项，其他信息可后续完善。</Text>
           <View style={styles.inputCard}>
-            <Text style={styles.sectionLabel}>昵称</Text>
+            <Text style={styles.sectionLabel}>昵称 <Text style={styles.bodyText}>必填</Text></Text>
             <TextInput
               value={nickname}
               onChangeText={setNickname}
               placeholder="例如：知行者"
               placeholderTextColor="#B8A690"
-              style={{ borderWidth: 1, borderColor: '#D8CDBB', borderRadius: 10, padding: 14, fontSize: 16, backgroundColor: '#FAF6ED', color: '#28241F' }}
+              style={{ borderWidth: 1, borderColor: '#D8CDBB', borderRadius: 10, padding: 14, fontSize: 16, backgroundColor: '#FAF6ED', color: '#28241F', marginBottom: 8 }}
               testID="nickname-input"
             />
           </View>
+          <Text style={[styles.bodyText, { fontSize: 13, color: '#756C60', marginBottom: 14 }]}>其他信息可稍后在「我的」中完善。</Text>
           <Pressable accessibilityRole="button" testID="save-profile" disabled={nickname.trim().length === 0} onPress={async () => {
             const now = new Date().toISOString();
             const newProfile = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, nickname: nickname.trim(), createdAt: now, updatedAt: now };
@@ -246,12 +253,19 @@ export default function App() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar style="dark" />
-        <View style={styles.home}>
-          <Text style={styles.seal}>易</Text>
-          <Text style={styles.brand}>东方传统文化</Text>
-          <Text style={styles.tagline}>{profile ? `早上好，${profile.nickname}` : '从一卦开始，读懂变化中的智慧'}</Text>
-          <Pressable accessibilityRole="button" testID="home-zhouyi" style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]} onPress={() => startCasting('coin')}>
-            <Text style={styles.primaryButtonText}>周易起卦</Text>
+        <View style={[styles.home, { paddingHorizontal: 28, paddingTop: 60, paddingBottom: 40 }]}>
+          <View style={{ alignItems: 'center', marginBottom: 28 }}>
+            <Text style={[styles.seal, { marginBottom: 12, width: 72, height: 72, fontSize: 40, lineHeight: 72 }]} accessibilityRole="header">易</Text>
+            <Text style={[styles.brand, { letterSpacing: 3, fontSize: 28 }]}>{profile ? profile.nickname : '东方传统文化'}</Text>
+            <Text style={[styles.tagline, { fontSize: 14, marginTop: 8 }]}>{profile ? '从一卦开始' : '从一卦开始，读懂变化中的智慧'}</Text>
+          </View>
+          <Pressable
+            accessibilityRole="button"
+            testID="home-zhouyi"
+            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
+            onPress={() => startCasting('coin')}
+          >
+            <Text style={styles.primaryButtonText}>开始起卦</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
@@ -269,6 +283,22 @@ export default function App() {
           >
             <Text style={styles.homeLinkText}>历史记录{history.length > 0 ? ` · ${history.length}` : ''}</Text>
           </Pressable>
+          {history.length > 0 && (
+            <Pressable
+              accessibilityRole="button"
+              testID="home-recent"
+              style={({ pressed }) => [styles.card, { marginTop: 12, padding: 14, width: '100%', maxWidth: 360, alignSelf: 'center' }, pressed && { opacity: 0.75 }]}
+              onPress={() => openRecord(history[0])}
+            >
+              <Text style={styles.eyebrow}>最近一次</Text>
+              <Text style={styles.hexagramName}>
+                {calculateHexagram(history[0].lines).benGua.name}
+              </Text>
+              <Text style={styles.historyMeta}>
+                {history[0].method === 'coin' ? '铜钱起卦' : '手动排卦'} · {new Date(history[0].createdAt).toLocaleDateString('zh-CN')}
+              </Text>
+            </Pressable>
+          )}
         </View>
       </SafeAreaView>
     );
@@ -362,15 +392,15 @@ export default function App() {
 
           {method === 'coin' ? (
             <View style={styles.inputCard}>
-              <Text style={styles.sectionLabel}>三枚铜钱，依次成爻</Text>
-              <Text style={styles.bodyText}>从初爻开始，每次投掷三枚铜钱；完成六爻后即可查看卦象。</Text>
+              <Text style={styles.sectionLabel}>第 {coinLines.length + 1} / 6 爻 · 初爻在下，逐步向上</Text>
+              <Text style={styles.bodyText}>每次投掷三枚铜钱，结果映射：6 老阴 · 7 少阳 · 8 少阴 · 9 老阳</Text>
               <View style={styles.coinProgress}>
                 {POSITION_NAMES.map((name, index) => {
                   const value = coinLines[index];
                   return (
                     <View key={name} style={[styles.coinLine, value && styles.coinLineDone]}>
-                      <Text style={styles.coinPosition}>{name}</Text>
-                      <Text style={styles.coinValue}>{value ? `${value} · ${lineLabel(value)}` : '待投'}</Text>
+                      <Text style={styles.coinPosition}>{name} <Text style={{ fontSize: 11, color: '#756C60' }}>({index + 1}/6)</Text></Text>
+                      <Text style={styles.coinValue}>{value ? `${value} · ${lineLabel(value)}` : '待投掷'}</Text>
                     </View>
                   );
                 })}
